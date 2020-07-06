@@ -1,0 +1,19 @@
+{% extends "flights/base.html" %} <!--had this namespace template structure ie within templates directory another directory called flights 
+    which contains index.html file bcz if multiple apps , each having an index.html file, create ambiguity , bcz when django runs a project, 
+    it searches for templates all across the projectso better-->
+
+{% block title %}
+    Flights
+{% endblock %}
+
+{% block body %}
+    <h1>Flights</h1>
+
+    {% for flight in flights %}
+        <li>
+            <a href="{% url 'flight' flight.id %}">
+                Flight #{{ flight.id }}: {{ flight.origin }} to {{ flight.destination }}
+            </a>
+        </li>
+    {% endfor %}
+{% endblock %}

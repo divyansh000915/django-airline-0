@@ -1,0 +1,42 @@
+{% extends "flights/base.html" %}
+
+{% block title %}
+    Flight {{ flight.id }}
+{% endblock %}
+
+{% block body %}
+    <ul>
+        <li>Flight Number: {{ flight.id }}</li>
+        <li>Origin: {{ flight.origin }}</li>
+        <li>Destination:  {{ flight.destination }}</li>
+        <li>
+            Passengers:
+            <ul>
+                {% for passenger in passengers %}
+                    <li>{{ passenger }}</li>
+                {% empty %} <!--if empty, display this-->
+                    <li>No passengers</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+    {% if non_passengers %} <!--non-passengers bcz want to book ticket for onmly those passengers whjo aren't already present in this particular flight
+        (to avoid redundancy, can have own ways of habdlig situation, as 1 person can book multiple seats-->
+        <h2>Add a Passenger</h2>
+        <form action="{% url 'book' flight.id %}" method="post"><!--here provided the flight.id along with the name of the route-->
+            {% csrf_token %} <!--csrf stands for cross site request forgery, which is a type of attack, a security vulnerablity, where someone might be able 
+            to forge, where the form is coming from, django is built to protect from these sorts of attack, so every time we have a from in django 
+            which we want to submit, have to add a little bit of more code, so whenever we submit this form, this token is submitted along with it, without 
+            it, we will get ERROR 403 forbidden Error, CSRF verificatin failed-->
+            <select name="passenger">
+                {% for passenger in non_passengers %}
+                    <option value="{{ passenger.id }}">{{ passenger }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Book Flight" />
+        </form>
+    {% else %}
+        <div>No passengers to add.</div>
+    {% endif %}
+    <a href="{% url 'index' %}">Back to full listing.</a> <!--see, here we just wrote the name of the route-->
+{% endblock %}
